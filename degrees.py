@@ -95,8 +95,10 @@ def shortest_path(source, target):
     """
 
     # TODO
-    start = Node(state=source, parent=None, action=None)
-    frontier = StackFrontier()
+    init_action = (source, next(iter(people[source]['movies'])))
+    start = Node(state=source, parent=None, action=[])
+    # frontier = StackFrontier()
+    frontier = QueueFrontier()
     frontier.add(start)
 
     explored = set()
@@ -108,28 +110,30 @@ def shortest_path(source, target):
             raise Exception("no solution")
 
         node = frontier.remove()
-        print(node.state)
+        print("Current checking id: ", node.state)
         num_explored += 1
 
         # Choose a node from the frontier
         if node.state == target:
             print("Found!")
-            print(node.state)
-            return
+            print(node.action)
+            return node.action
 
         explored.add(node.state)
 
         neighbors = neighbors_for_person(node.state)
-        neighbors_id_set = set()
-        # Starting point of the search
         for neighbor in neighbors:
-            neighbors_id_set.add(neighbor[1])
+            print(neighbor)
+            action = node.action.copy()
+            if not frontier.contains_state(neighbor[1]) and neighbor[1] not in explored:
+                action.append(neighbor)
+                print("after appending action: ", action)
+                child = Node(state=neighbor[1],
+                             parent=node, action=action)
 
-        for neighbor_id in neighbors_id_set:
-            if not frontier.contains_state(neighbor_id) and neighbor_id not in explored:
-                child = Node(state=neighbor_id, parent=node, action=None)
                 frontier.add(child)
 
+    # 129 -> 398
     raise NotImplementedError
 
 
