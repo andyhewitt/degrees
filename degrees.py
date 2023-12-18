@@ -62,12 +62,12 @@ def main():
     load_data(directory)
     print("Data loaded.")
 
-    # source = person_id_for_name(input("Name: "))
-    source = person_id_for_name("Emma Watson")
+    source = person_id_for_name(input("Name: "))
+    # source = person_id_for_name("Tom Cruise")
     if source is None:
         sys.exit("Person not found.")
-    # target = person_id_for_name(input("Name: "))
-    target = person_id_for_name("Jennifer Lawrence")
+    target = person_id_for_name(input("Name: "))
+    # target = person_id_for_name("Sally Field")
     if target is None:
         sys.exit("Person not found.")
 
@@ -112,24 +112,22 @@ def shortest_path(source, target):
         print("Current checking id: ", node.state)
         num_explored += 1
 
-        # Choose a node from the frontier
-        if node.state == target:
-            print(node.action)
-            return node.action
-
         explored.add(node.state)
 
         neighbors = neighbors_for_person(node.state)
         for neighbor in neighbors:
-            action = node.action.copy()
             if not frontier.contains_state(neighbor[1]) and neighbor[1] not in explored:
-                action.append(neighbor)
+                print(f"Currently adding {neighbor[1]} into the stack.")
+                action = node.action + [neighbor]
                 child = Node(state=neighbor[1],
                              parent=node, action=action)
                 if neighbor[1] == target:
+                    print(f"Checked {num_explored} times.")
                     return child.action
 
                 frontier.add(child)
+            else:
+                print(f"Skip {neighbor[1]} because it is already in the checking list.")
 
 
 def person_id_for_name(name):
