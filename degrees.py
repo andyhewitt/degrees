@@ -63,11 +63,11 @@ def main():
     print("Data loaded.")
 
     # source = person_id_for_name(input("Name: "))
-    source = person_id_for_name("Tom Cruise")
+    source = person_id_for_name("Emma Watson")
     if source is None:
         sys.exit("Person not found.")
     # target = person_id_for_name(input("Name: "))
-    target = person_id_for_name("Sally Field")
+    target = person_id_for_name("Jennifer Lawrence")
     if target is None:
         sys.exit("Person not found.")
 
@@ -95,7 +95,6 @@ def shortest_path(source, target):
     """
 
     # TODO
-    init_action = (source, next(iter(people[source]['movies'])))
     start = Node(state=source, parent=None, action=[])
     # frontier = StackFrontier()
     frontier = QueueFrontier()
@@ -115,7 +114,6 @@ def shortest_path(source, target):
 
         # Choose a node from the frontier
         if node.state == target:
-            print("Found!")
             print(node.action)
             return node.action
 
@@ -123,18 +121,15 @@ def shortest_path(source, target):
 
         neighbors = neighbors_for_person(node.state)
         for neighbor in neighbors:
-            print(neighbor)
             action = node.action.copy()
             if not frontier.contains_state(neighbor[1]) and neighbor[1] not in explored:
                 action.append(neighbor)
-                print("after appending action: ", action)
                 child = Node(state=neighbor[1],
                              parent=node, action=action)
+                if neighbor[1] == target:
+                    return child.action
 
                 frontier.add(child)
-
-    # 129 -> 398
-    raise NotImplementedError
 
 
 def person_id_for_name(name):
