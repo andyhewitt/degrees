@@ -95,7 +95,7 @@ def shortest_path(source, target):
     """
 
     # TODO
-    start = Node(state=source, parent=None, action=[])
+    start = Node(state=source, parent=None, action=None)
     # frontier = StackFrontier()
     frontier = QueueFrontier()
     frontier.add(start)
@@ -114,20 +114,29 @@ def shortest_path(source, target):
 
         explored.add(node.state)
 
-        neighbors = neighbors_for_person(node.state)
-        for neighbor in neighbors:
-            if not frontier.contains_state(neighbor[1]) and neighbor[1] not in explored:
-                print(f"Currently adding {neighbor[1]} into the stack.")
-                action = node.action + [neighbor]
-                child = Node(state=neighbor[1],
-                             parent=node, action=action)
-                if neighbor[1] == target:
-                    print(f"Checked {num_explored} times.")
-                    return child.action
+        for movie_id, person_id in neighbors_for_person(node.state):
+            if not frontier.contains_state(person_id) and person_id not in explored:
+                child = Node(state=person_id, parent=node, action=movie_id)
+                # If node is the goal, then we have a solution
+                print(f'checking id: {node.state}, target id: {target}')
+                if child.state == target:
+                    print("found")
+                    movie_list = []
+                    person_list = []
+                    solutions = []
+                    while child.parent is not None:
+                        movie_list.append(child.action)
+                        person_list.append(child.state)
+                        child = child.parent
+                    movie_list.reverse()
+                    person_list.reverse()
+                    x = zip(movie_list, person_list)
+                    print(x)
+                    for movie, person in x:
+                        solutions.append((movie, person))
+                    return solutions
 
                 frontier.add(child)
-            else:
-                print(f"Skip {neighbor[1]} because it is already in the checking list.")
 
 
 def person_id_for_name(name):
